@@ -130,29 +130,6 @@
 </head>
 <body class="bg-pattern min-h-screen text-slate-100 flex flex-col justify-between selection:bg-gold-500 selection:text-slate-900">
 
-  <!-- TOP ANNOUNCEMENT TICKER -->
-  <div class="bg-emerald-950/80 border-b border-amber-500/30 text-amber-200 text-sm py-2 px-4 flex items-center justify-between backdrop-blur-sm z-40">
-    <div class="flex items-center space-x-2 shrink-0 font-semibold text-amber-400">
-      <i class="fa-solid fa-bullhorn animate-bounce"></i>
-      <span>PENGUMUMAN SURAU:</span>
-    </div>
-    <div class="overflow-hidden relative w-full mx-4">
-      <div id="marquee-text" class="whitespace-nowrap inline-block animate-marquee">
-        Kuliah Maghrib akan diadakan pada hari Rabu ini. Semua jemaah dijemput hadir. • Sila matikan atau senyap telefon bimbit semasa solat berjemaah.
-      </div>
-    </div>
-    <div id="normal-controls" class="flex items-center space-x-3 shrink-0 text-xs">
-      <button id="btn-audio-toggle" onclick="toggleAudio()" class="bg-emerald-800 hover:bg-emerald-700 text-amber-300 px-3 py-1.5 rounded-lg border border-amber-500/30 transition flex items-center space-x-1.5">
-        <i id="audio-icon" class="fa-solid fa-volume-high text-amber-400"></i>
-        <span id="audio-status-text">Bunyi: ON</span>
-      </button>
-      <button onclick="toggleTVMode()" class="bg-amber-600 hover:bg-amber-500 text-slate-950 font-bold px-3 py-1.5 rounded-lg transition flex items-center space-x-1.5 shadow-lg shadow-amber-600/20">
-        <i class="fa-solid fa-tv"></i>
-        <span>Mod TV</span>
-      </button>
-    </div>
-  </div>
-
   <!-- MAIN CONTAINER -->
   <div class="container mx-auto px-4 py-4 md:py-6 flex-grow flex flex-col justify-between">
 
@@ -171,7 +148,7 @@
               SURAU AL FALAH TSCC
             </h1>
             <p class="text-xs md:text-sm text-emerald-200/80 font-medium tracking-wider flex items-center justify-center lg:justify-start gap-2 mt-1">
-              <span><i class="fa-solid fa-location-dot text-amber-400"></i> Taman Sri Chinchin / Bandar Melaka</span>
+              <span><i class="fa-solid fa-location-dot text-amber-400"></i> Taman Seri Chinchin / Bandar Melaka</span>
               <span>•</span>
               <span id="current-zone-display" class="bg-emerald-900/80 text-amber-300 text-xs px-2 py-0.5 rounded border border-amber-500/30">
                 Jadual Khas Surau
@@ -360,16 +337,16 @@
           <div class="space-y-3 max-h-[220px] overflow-y-auto pr-1">
             <div class="bg-emerald-950/60 p-3 rounded-xl border border-emerald-800/80">
               <div class="flex items-center justify-between text-xs text-amber-400 font-semibold mb-1">
-                <span><i class="fa-solid fa-graduation-cap mr-1"></i> Kuliah Maghrib Subuh</span>
-                <span class="text-[10px] text-emerald-400">Setiap Jumaat</span>
+                <span><i class="fa-solid fa-graduation-cap mr-1"></i> Kelas Takmir Surau</span>
+                <span class="text-[10px] text-emerald-400">Setiap Rabu</span>
               </div>
-              <p class="text-xs text-slate-200">Pengajian Kitab Bahrul Mazzi di Dewan Solat Utama.</p>
+              <p class="text-xs text-slate-200">Pengajian Kelas Takmir selepas solat Maghrib.</p>
             </div>
 
             <div class="bg-emerald-950/60 p-3 rounded-xl border border-emerald-800/80">
               <div class="flex items-center justify-between text-xs text-amber-400 font-semibold mb-1">
-                <span><i class="fa-solid fa-hands-holding-child mr-1"></i> Program Yaasin & Tahlil</span>
-                <span class="text-[10px] text-emerald-400">Malam Jumaat</span>
+                <span><i class="fa-solid fa-hands-holding-child mr-1"></i> Bacaan Yaasin & Tahlil</span>
+                <span class="text-[10px] text-emerald-400">Malam Jumaat / Khamis</span>
               </div>
               <p class="text-xs text-slate-200">Majlis bacaan Yaasin dan Tahlil selepas solat Maghrib.</p>
             </div>
@@ -558,9 +535,43 @@
     window.onload = function() {
       document.getElementById('current-year').textContent = new Date().getFullYear();
       loadTodayPrayerData();
+      updateDynamicNotice();
       updateClock();
       setInterval(updateClock, 1000);
     };
+
+    function updateDynamicNotice() {
+      const dayIndex = new Date().getDay(); // 3 = Rabu, 4 = Khamis
+      const noticeBox = document.getElementById('dynamic-today-notice');
+      const noticeTitle = document.getElementById('notice-title');
+      const noticeBadge = document.getElementById('notice-badge');
+      const noticeDesc = document.getElementById('notice-desc');
+
+      if (!noticeBox) return;
+
+      if (dayIndex === 3) {
+        // Hari Rabu
+        noticeBox.className = "bg-amber-500/20 border-amber-500/60 p-3.5 rounded-xl text-amber-200 shadow-lg";
+        noticeTitle.innerHTML = `<i class="fa-solid fa-graduation-cap mr-1 text-amber-400"></i> Aktiviti Malam Ini (Rabu)`;
+        noticeBadge.className = "text-[10px] px-2 py-0.5 rounded bg-amber-500 text-slate-950 font-bold uppercase";
+        noticeBadge.textContent = "Kelas Takmir";
+        noticeDesc.textContent = "Program Pengajian Kelas Takmir Surau Al Falah TSCC akan diadakan selepas solat Maghrib secara berjemaah.";
+      } else if (dayIndex === 4) {
+        // Hari Khamis
+        noticeBox.className = "bg-emerald-800/40 border-amber-400/60 p-3.5 rounded-xl text-emerald-100 shadow-lg";
+        noticeTitle.innerHTML = `<i class="fa-solid fa-book-open-reader mr-1 text-amber-400"></i> Aktiviti Malam Ini (Khamis)`;
+        noticeBadge.className = "text-[10px] px-2 py-0.5 rounded bg-emerald-500 text-slate-950 font-bold uppercase";
+        noticeBadge.textContent = "Yaasin & Tahlil";
+        noticeDesc.textContent = "Program Bacaan Yaasin dan Tahlil malam Jumaat akan diadakan selepas solat Maghrib. Semua jemaah dijemput hadir.";
+      } else {
+        // Hari-hari lain
+        noticeBox.className = "bg-emerald-950/60 border-emerald-800 p-3.5 rounded-xl text-slate-200";
+        noticeTitle.innerHTML = `<i class="fa-solid fa-mosque mr-1 text-amber-400"></i> Info Aktiviti Surau`;
+        noticeBadge.className = "text-[10px] px-2 py-0.5 rounded bg-emerald-900 text-emerald-300 border border-emerald-700 uppercase";
+        noticeBadge.textContent = "Surau Al Falah";
+        noticeDesc.textContent = "Selamat datang ke Surau Al Falah TSCC. Sila pastikan telefon bimbit disenyapkan semasa di dalam Dewan Solat.";
+      }
+    }
 
     function loadTodayPrayerData() {
       const now = new Date();
@@ -582,6 +593,22 @@
       document.getElementById('time-Asar').textContent = convertTo24H(todayData.asr);
       document.getElementById('time-Maghrib').textContent = convertTo24H(todayData.maghrib);
       document.getElementById('time-Isya').textContent = convertTo24H(todayData.isha);
+
+      // Dynamic Daily Notice Update
+      const dayToday = todayData.day;
+      const noticeDayEl = document.getElementById('notice-today-day');
+      const noticeTextEl = document.getElementById('notice-today-text');
+
+      noticeDayEl.textContent = dayToday;
+      if (dayToday === "Rabu") {
+        noticeTextEl.textContent = "Malam ini: Kelas Takmir Surau Al Falah selepas solat Maghrib. Semua jemaah dijemput hadir.";
+      } else if (dayToday === "Khamis") {
+        noticeTextEl.textContent = "Malam ini (Malam Jumaat): Program Bacaan Yaasin, Tahlil & Doa Selamat selepas solat Maghrib.";
+      } else if (dayToday === "Jumaat") {
+        noticeTextEl.textContent = "Hari ini: Solat Jumaat & Kuliah Subuh/Maghrib Perdana.";
+      } else {
+        noticeTextEl.textContent = "Aktiviti harian surau berjalan seperti biasa. Sila kekalkan kebersihan dewan solat.";
+      }
     }
 
     function getFormattedDateKey(d) {
