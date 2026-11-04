@@ -178,6 +178,17 @@
               --
             </div>
           </div>
+
+          <!-- BUTANG AUDIO / NADA AZAN -->
+          <div class="pl-2 border-l border-emerald-800/80 flex flex-col gap-1">
+            <button id="toggle-audio-btn" onclick="toggleAudio()" class="bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 text-xs px-2.5 py-1 rounded-lg flex items-center gap-1.5 transition">
+              <i id="audio-icon" class="fa-solid fa-volume-high"></i>
+              <span id="audio-status-text">Bunyi: Aktif</span>
+            </button>
+            <button onclick="testAzanSound()" class="bg-emerald-900/80 hover:bg-emerald-800 text-emerald-300 border border-emerald-700/50 text-[10px] px-2 py-0.5 rounded flex items-center justify-center gap-1">
+              <i class="fa-solid fa-bell"></i> Uji Sound
+            </button>
+          </div>
         </div>
 
       </div>
@@ -288,6 +299,25 @@
       <div>© <span id="current-year">2026</span> <strong>Surau Al Falah TSCC</strong>. Jadual Khas Surau.</div>
       <div>Sistem Waktu Azan TV Surau v3.0</div>
     </footer>
+  </div>
+
+  <!-- POPUP NOTIFIKASI WAKTU AZAN HAS MASUK -->
+  <div id="azan-modal" class="fixed inset-0 bg-black/90 backdrop-blur-md z-50 hidden flex flex-col items-center justify-center p-6 text-center">
+    <div class="w-24 h-24 rounded-full bg-amber-500/20 border-2 border-amber-400 flex items-center justify-center mb-4 pulse-glow">
+      <i class="fa-solid fa-mosque text-5xl gold-gradient-text"></i>
+    </div>
+    <span class="text-amber-400 text-lg font-bold tracking-widest uppercase mb-1">MEMANJATKAN SYUKUR</span>
+    <h2 class="text-3xl md:text-5xl lg:text-6xl font-black gold-gradient-text mb-2 uppercase" id="azan-modal-title">TELAH MASUK WAKTU SOLAT</h2>
+    <p class="text-emerald-200 text-base md:text-2xl font-semibold mb-6" id="azan-modal-subtitle">Bagi Kawasan Taman Seri Chinchin & Sebaiknya</p>
+    
+    <div class="bg-emerald-950/80 border border-amber-500/40 rounded-2xl p-6 mb-8 max-w-md w-full shadow-2xl">
+      <div class="text-slate-300 text-sm mb-2">LAUNGAN AZAN & PERSIAPAN SOLAT FARDHU</div>
+      <div class="text-4xl md:text-5xl font-extrabold text-amber-300 font-mono tracking-wider" id="azan-modal-time">--:--</div>
+    </div>
+
+    <button onclick="stopAzanNotification()" class="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black px-8 py-3 rounded-xl text-base md:text-lg shadow-xl transition transform hover:scale-105">
+      <i class="fa-solid fa-check mr-2"></i> Tutup Notifikasi
+    </button>
   </div>
 
   <!-- MONTHLY MODAL -->
@@ -430,6 +460,9 @@
     ];
 
     let todayData = null;
+    let isAudioEnabled = true;
+    let audioContext = null;
+    let lastTriggeredPrayer = "";
 
     window.onload = function() {
       const yearEl = document.getElementById('current-year');
@@ -438,7 +471,89 @@
       loadTodayPrayerData();
       updateClock();
       setInterval(updateClock, 1000);
+
+      // Inisialisasi Audio On User Click
+      document.body.addEventListener('click', initAudioContext, { once: true });
     };
+
+    function initAudioContext() {
+      if (!audioContext) {
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      }
+    }
+
+    function toggleAudio() {
+      isAudioEnabled = !isAudioEnabled;
+      const icon = document.getElementById('audio-icon');
+      const text = document.getElementById('audio-status-text');
+      
+      if (isAudioEnabled) {
+        if (icon) icon.className = "fa-solid fa-volume-high";
+        if (text) text.textContent = "Bunyi: Aktif";
+        testAzanSound();
+      } else {
+        if (icon) icon.className = "fa-solid fa-volume-xmark text-red-400";
+        if (text) text.textContent = "Bunyi: Bisu";
+      }
+    }
+
+    // PENJANA BUNYI BEEP AZAN / PENGGERA MESRA BROWSER (TANPA LINK OUTSIDE STABLE)
+    function playAzanBeepTone() {
+      if (!isAudioEnabled) return;
+      initAudioContext();
+      if (!audioContext) return;
+
+      if (audioContext.state === 'suspended') {
+        audioContext.resume();
+      }
+
+      // Alunan Beep Berganda Penggera Solat
+      const tones = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6 Harmonic
+      tones.forEach((freq, idx) => {
+        setTimeout(() => {
+          try {
+            const osc = audioContext.createOscillator();
+            const gain = audioContext.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(freq, audioContext.currentTime);
+
+            gain.gain.setValueAtTime(0.3, audioContext.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.8);
+
+            osc.connect(gain);
+            gain.connect(audioContext.destination);
+
+            osc.start();
+            osc.stop(audioContext.currentTime + 0.8);
+          } catch (e) {
+            console.log("Audio Error:", e);
+          }
+        }, idx * 400);
+      });
+    }
+
+    function testAzanSound() {
+      playAzanBeepTone();
+    }
+
+    function triggerAzanNotification(prayerName, time24) {
+      playAzanBeepTone();
+
+      const modal = document.getElementById('azan-modal');
+      const title = document.getElementById('azan-modal-title');
+      const subtitle = document.getElementById('azan-modal-subtitle');
+      const timeEl = document.getElementById('azan-modal-time');
+
+      if (title) title.textContent = `TELAH MASUK WAKTU SOLAT ${prayerName.toUpperCase()}`;
+      if (subtitle) subtitle.textContent = `Persiapan Solat Fardhu ${prayerName} di Surau Al Falah TSCC`;
+      if (timeEl) timeEl.textContent = time24;
+      if (modal) modal.classList.remove('hidden');
+    }
+
+    function stopAzanNotification() {
+      const modal = document.getElementById('azan-modal');
+      if (modal) modal.classList.add('hidden');
+    }
 
     function loadTodayPrayerData() {
       const now = new Date();
@@ -472,12 +587,13 @@
       const hours = String(now.getHours()).padStart(2, '0');
       const minutes = String(now.getMinutes()).padStart(2, '0');
       const seconds = String(now.getSeconds()).padStart(2, '0');
+      const currentTime24 = `${hours}:${minutes}`;
 
       const clockEl = document.getElementById('live-clock');
       const secEl = document.getElementById('live-clock-seconds');
       
       if (clockEl && clockEl.childNodes.length > 0) {
-        clockEl.childNodes[0].nodeValue = `${hours}:${minutes}`;
+        clockEl.childNodes[0].nodeValue = currentTime24;
       }
       if (secEl) secEl.textContent = `:${seconds}`;
 
@@ -493,6 +609,24 @@
       if (secHand) secHand.style.transform = `rotate(${secDeg}deg)`;
       if (minHand) minHand.style.transform = `rotate(${minDeg}deg)`;
       if (hourHand) hourHand.style.transform = `rotate(${hourDeg}deg)`;
+
+      // Semakan Bunyi Azan Tepat Pada Saat :00
+      if (todayData && seconds === "00") {
+        const prayersToCheck = [
+          { name: "Subuh", time: convertTo24H(todayData.fajr) },
+          { name: "Zohor", time: convertTo24H(todayData.dhuhr) },
+          { name: "Asar", time: convertTo24H(todayData.asr) },
+          { name: "Maghrib", time: convertTo24H(todayData.maghrib) },
+          { name: "Isya'", time: convertTo24H(todayData.isha) }
+        ];
+
+        prayersToCheck.forEach(p => {
+          if (p.time === currentTime24 && lastTriggeredPrayer !== `${p.name}-${currentTime24}`) {
+            lastTriggeredPrayer = `${p.name}-${currentTime24}`;
+            triggerAzanNotification(p.name, p.time);
+          }
+        });
+      }
 
       // Update Countdown
       updateCountdown(now);
