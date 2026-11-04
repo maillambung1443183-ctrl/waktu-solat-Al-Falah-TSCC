@@ -49,7 +49,6 @@
       background-image: radial-gradient(#10b981 0.75px, transparent 0.75px), radial-gradient(#10b981 0.75px, #041f18 0.75px);
       background-size: 30px 30px;
       background-position: 0 0, 15px 15px;
-      background-opacity: 0.05;
     }
 
     .glass-panel {
@@ -72,14 +71,14 @@
     }
 
     .active-prayer-card {
-      background: linear-gradient(135deg, rgba(5, 150, 105, 0.8) 0%, rgba(4, 120, 87, 0.9) 100%);
-      border: 2px solid #fbbf24;
-      box-shadow: 0 0 25px rgba(245, 158, 11, 0.3);
+      background: linear-gradient(135deg, rgba(5, 150, 105, 0.85) 0%, rgba(4, 120, 87, 0.95) 100%);
+      border: 3px solid #fbbf24;
+      box-shadow: 0 0 30px rgba(245, 158, 11, 0.4);
     }
 
     @keyframes pulse-glow {
       0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.6; transform: scale(1.02); }
+      50% { opacity: 0.6; transform: scale(1.05); }
     }
     .pulse-glow {
       animation: pulse-glow 2s infinite ease-in-out;
@@ -94,22 +93,6 @@
     .clock-hand {
       transform-origin: 50% 100%;
       transition: transform 0.05s cubic-bezier(0.4, 2.08, 0.55, 0.44);
-    }
-
-    body.tv-mode #normal-controls,
-    body.tv-mode #sidebar-section,
-    body.tv-mode #footer-section {
-      display: none !important;
-    }
-
-    body.tv-mode #main-content {
-      width: 100% !important;
-      max-width: 100% !important;
-      padding: 1.5rem !important;
-    }
-
-    body.tv-mode .prayer-grid {
-      grid-template-columns: repeat(7, minmax(0, 1fr)) !important;
     }
 
     ::-webkit-scrollbar {
@@ -131,10 +114,10 @@
 <body class="bg-pattern min-h-screen text-slate-100 flex flex-col justify-between selection:bg-gold-500 selection:text-slate-900">
 
   <!-- MAIN CONTAINER -->
-  <div class="container mx-auto px-4 py-4 md:py-6 flex-grow flex flex-col justify-between">
+  <div class="container mx-auto px-4 py-4 md:py-6 flex-grow flex flex-col justify-between max-w-7xl">
 
     <!-- HEADER SECTION -->
-    <header class="glass-panel rounded-2xl p-4 md:p-6 mb-6 shadow-2xl relative overflow-hidden">
+    <header class="glass-panel rounded-2xl p-4 md:p-6 mb-4 shadow-2xl relative overflow-hidden">
       <div class="flex flex-col lg:flex-row items-center justify-between gap-6 relative z-10">
         
         <div class="flex items-center space-x-4 text-center lg:text-left">
@@ -144,35 +127,56 @@
             </div>
           </div>
           <div>
-            <h1 class="text-2xl md:text-4xl font-extrabold tracking-tight gold-gradient-text">
+            <h1 class="text-3xl md:text-5xl font-extrabold tracking-tight gold-gradient-text">
               SURAU AL FALAH TSCC
             </h1>
-            <p class="text-xs md:text-sm text-emerald-200/80 font-medium tracking-wider flex items-center justify-center lg:justify-start gap-2 mt-1">
+            <p class="text-xs md:text-base text-emerald-200/80 font-medium tracking-wider flex items-center justify-center lg:justify-start gap-2 mt-1">
               <span><i class="fa-solid fa-location-dot text-amber-400"></i> Taman Seri Chinchin / Bandar Melaka</span>
               <span>•</span>
-              <span id="current-zone-display" class="bg-emerald-900/80 text-amber-300 text-xs px-2 py-0.5 rounded border border-amber-500/30">
+              <span id="current-zone-display" class="bg-emerald-900/80 text-amber-300 text-xs px-2.5 py-0.5 rounded border border-amber-500/30">
                 Jadual Khas Surau
               </span>
             </p>
           </div>
         </div>
 
-        <!-- Real-Time Clock & Date Panel -->
-        <div class="flex flex-col sm:flex-row items-center gap-4 bg-emerald-950/60 p-4 rounded-xl border border-amber-500/20 w-full lg:w-auto justify-around">
-          <div class="text-center sm:text-right sm:pr-4 sm:border-r border-emerald-800/80">
-            <div class="text-3xl md:text-5xl font-black tracking-wider font-mono text-amber-300 flex items-center justify-center sm:justify-end gap-1" id="live-clock">
-              00:00<span class="text-xl md:text-2xl text-amber-500" id="live-clock-seconds">:00</span>
+        <!-- Real-Time Clock & Date Panel + Jam Analog -->
+        <div class="flex flex-wrap items-center justify-center gap-6 bg-emerald-950/70 p-4 rounded-2xl border border-amber-500/30 w-full lg:w-auto">
+          <!-- Jam Analog Besar -->
+          <div class="flex items-center space-x-3 pr-4 border-r border-emerald-800/80">
+            <div class="relative w-16 h-16 md:w-20 md:h-20 rounded-full analog-clock-dial flex items-center justify-center shrink-0">
+              <!-- Hour markers -->
+              <div class="absolute w-1.5 h-1.5 bg-amber-400 rounded-full top-1.5"></div>
+              <div class="absolute w-1.5 h-1.5 bg-amber-400 rounded-full right-1.5"></div>
+              <div class="absolute w-1.5 h-1.5 bg-amber-400 rounded-full bottom-1.5"></div>
+              <div class="absolute w-1.5 h-1.5 bg-amber-400 rounded-full left-1.5"></div>
+              
+              <!-- Hands -->
+              <div id="analog-hour-hand" class="clock-hand absolute w-1.5 h-5 bg-amber-300 rounded-full top-[14px] left-[30px] md:top-[18px] md:left-[38px] md:h-6"></div>
+              <div id="analog-minute-hand" class="clock-hand absolute w-1 h-7 bg-slate-100 rounded-full top-[6px] left-[31px] md:top-[8px] md:left-[39px] md:h-9"></div>
+              <div id="analog-second-hand" class="clock-hand absolute w-[1.5px] h-8 bg-amber-500 top-[4px] left-[31.25px] md:top-[6px] md:left-[39.25px] md:h-10"></div>
+              
+              <!-- Center Pin -->
+              <div class="absolute w-2.5 h-2.5 bg-amber-400 rounded-full border border-slate-900 z-10"></div>
             </div>
-            <div class="text-xs text-emerald-300 uppercase tracking-widest font-semibold mt-0.5">
+          </div>
+
+          <!-- Digital Clock -->
+          <div class="text-center sm:text-right pr-4 border-r border-emerald-800/80">
+            <div class="text-4xl md:text-6xl font-black tracking-wider font-mono text-amber-300 flex items-center justify-center sm:justify-end gap-1" id="live-clock">
+              00:00<span class="text-2xl md:text-3xl text-amber-500" id="live-clock-seconds">:00</span>
+            </div>
+            <div class="text-xs text-emerald-300 uppercase tracking-widest font-bold mt-1">
               Waktu Semasa (MST)
             </div>
           </div>
 
+          <!-- Tarikh -->
           <div class="text-center sm:text-left space-y-1">
-            <div id="gregorian-date" class="text-base md:text-lg font-bold text-slate-100">
+            <div id="gregorian-date" class="text-lg md:text-xl font-bold text-slate-100">
               --
             </div>
-            <div id="hijri-date" class="text-sm font-semibold text-amber-400 font-arabic">
+            <div id="hijri-date" class="text-base md:text-lg font-bold text-amber-400 font-arabic">
               --
             </div>
           </div>
@@ -181,206 +185,108 @@
       </div>
     </header>
 
-    <!-- NEXT PRAYER COUNTDOWN BANNER -->
-    <section class="mb-6">
-      <div id="countdown-card" class="glass-panel rounded-2xl p-4 md:p-6 border-amber-500/40 relative overflow-hidden transition-all duration-300">
-        <div class="flex flex-col md:flex-row items-center justify-between gap-4">
-          <div class="flex items-center space-x-4 text-center md:text-left">
-            <div class="w-12 h-12 rounded-full bg-amber-500/20 border border-amber-400/40 flex items-center justify-center text-amber-400 text-2xl shrink-0">
+    <!-- NEXT PRAYER COUNTDOWN BANNER (RINGKAS & COMPACT) -->
+    <section class="mb-5">
+      <div id="countdown-card" class="glass-panel rounded-xl px-5 py-3 border-amber-500/40 relative overflow-hidden shadow-lg">
+        <div class="flex flex-wrap items-center justify-between gap-3 text-sm">
+          <div class="flex items-center space-x-3">
+            <div class="w-8 h-8 rounded-full bg-amber-500/20 border border-amber-400/40 flex items-center justify-center text-amber-400 text-base shrink-0">
               <i class="fa-regular fa-clock pulse-glow"></i>
             </div>
-            <div>
-              <span class="text-xs uppercase tracking-widest text-emerald-300 font-bold block">Solat Seterusnya</span>
-              <h2 id="next-prayer-name" class="text-2xl md:text-3xl font-extrabold text-amber-300">Memuatkan...</h2>
+            <div class="flex items-center gap-2">
+              <span class="text-xs uppercase text-emerald-300 font-bold">Solat Seterusnya:</span>
+              <h2 id="next-prayer-name" class="text-lg md:text-xl font-extrabold text-amber-300">Memuatkan...</h2>
+              <span class="text-xs text-amber-400/80 font-mono" id="next-prayer-time-bracket">(--:--)</span>
             </div>
           </div>
 
-          <div class="flex items-center space-x-2 md:space-x-3 text-center">
-            <div class="bg-emerald-950/90 border border-amber-500/30 rounded-xl px-3 py-2 min-w-[65px]">
-              <span id="cd-hours" class="text-2xl md:text-4xl font-black font-mono text-amber-400 block">00</span>
-              <span class="text-[10px] uppercase text-emerald-300 font-semibold tracking-wider">Jam</span>
+          <div class="flex items-center space-x-2 font-mono">
+            <span class="text-xs text-emerald-300 font-bold uppercase mr-1">Baki Masa:</span>
+            <div class="bg-emerald-950/90 border border-amber-500/40 rounded-lg px-2.5 py-1 text-center min-w-[45px]">
+              <span id="cd-hours" class="text-base md:text-lg font-black text-amber-400 block">00</span>
             </div>
-            <span class="text-2xl md:text-3xl font-bold text-amber-500">:</span>
-            <div class="bg-emerald-950/90 border border-amber-500/30 rounded-xl px-3 py-2 min-w-[65px]">
-              <span id="cd-minutes" class="text-2xl md:text-4xl font-black font-mono text-amber-400 block">00</span>
-              <span class="text-[10px] uppercase text-emerald-300 font-semibold tracking-wider">Minit</span>
+            <span class="font-bold text-amber-500">:</span>
+            <div class="bg-emerald-950/90 border border-amber-500/40 rounded-lg px-2.5 py-1 text-center min-w-[45px]">
+              <span id="cd-minutes" class="text-base md:text-lg font-black text-amber-400 block">00</span>
             </div>
-            <span class="text-2xl md:text-3xl font-bold text-amber-500">:</span>
-            <div class="bg-emerald-950/90 border border-amber-500/30 rounded-xl px-3 py-2 min-w-[65px]">
-              <span id="cd-seconds" class="text-2xl md:text-4xl font-black font-mono text-amber-400 block">00</span>
-              <span class="text-[10px] uppercase text-emerald-300 font-semibold tracking-wider">Saat</span>
+            <span class="font-bold text-amber-500">:</span>
+            <div class="bg-emerald-950/90 border border-amber-500/40 rounded-lg px-2.5 py-1 text-center min-w-[45px]">
+              <span id="cd-seconds" class="text-base md:text-lg font-black text-amber-400 block">00</span>
             </div>
-          </div>
-
-          <div class="text-xs text-emerald-200/70 bg-emerald-950/40 px-3 py-2 rounded-lg border border-emerald-800/40 text-center md:text-right">
-            <span>Waktu Azan: </span>
-            <strong id="next-prayer-time" class="text-amber-300 text-sm block font-mono">--:--</strong>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- CONTENT GRID -->
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-6" id="main-content">
-      <main class="lg:col-span-8 flex flex-col justify-between">
-        <div>
-          <div class="flex items-center justify-between mb-4">
-            <h3 class="text-lg font-bold text-amber-300 flex items-center gap-2">
-              <i class="fa-solid fa-kaaba text-amber-400"></i> Waktu Solat Hari Ini
-            </h3>
-            
-            <!-- Jam Analog & Status Indicator Wrapper -->
-            <div class="flex items-center space-x-3">
-              <span id="status-indicator" class="hidden sm:inline-flex text-xs text-emerald-300 bg-emerald-950/80 px-2.5 py-1 rounded-full border border-emerald-800">
-                <i class="fa-solid fa-circle-check text-emerald-400 mr-1"></i> Takwim Khas Aktif
-              </span>
-              
-              <!-- Analog Clock Display -->
-              <div class="flex items-center space-x-2 bg-emerald-950/70 border border-amber-500/30 px-3 py-1.5 rounded-xl shadow-lg">
-                <div class="relative w-12 h-12 rounded-full analog-clock-dial flex items-center justify-center shrink-0">
-                  <!-- Hour markers -->
-                  <div class="absolute w-1 h-1 bg-amber-400 rounded-full top-1"></div>
-                  <div class="absolute w-1 h-1 bg-amber-400 rounded-full right-1"></div>
-                  <div class="absolute w-1 h-1 bg-amber-400 rounded-full bottom-1"></div>
-                  <div class="absolute w-1 h-1 bg-amber-400 rounded-full left-1"></div>
-                  
-                  <!-- Hands -->
-                  <div id="analog-hour-hand" class="clock-hand absolute w-1 h-3.5 bg-amber-300 rounded-full top-[10px] left-[22px]"></div>
-                  <div id="analog-minute-hand" class="clock-hand absolute w-0.5 h-5 bg-slate-100 rounded-full top-[4px] left-[23px]"></div>
-                  <div id="analog-second-hand" class="clock-hand absolute w-[1px] h-5 bg-amber-500 top-[4px] left-[23.5px]"></div>
-                  
-                  <!-- Center Pin -->
-                  <div class="absolute w-2 h-2 bg-amber-400 rounded-full border border-slate-900 z-10"></div>
-                </div>
-                <div class="text-[10px] font-semibold text-amber-300 uppercase tracking-wider hidden md:block">
-                  Jam Analog
-                </div>
-              </div>
-            </div>
-          </div>
+    <!-- LARGE PRAYER TIME GRID SECTION (DIBESARKAN MAKSIMUM) -->
+    <main class="w-full my-auto flex-grow flex flex-col justify-center">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-2xl md:text-3xl font-extrabold text-amber-300 flex items-center gap-3">
+          <i class="fa-solid fa-kaaba text-amber-400"></i> WAKTU SOLAT HARI INI
+        </h3>
+        <button onclick="openMonthlyModal()" class="bg-emerald-900/80 hover:bg-emerald-800 text-amber-300 font-semibold text-xs md:text-sm py-2 px-4 rounded-xl border border-amber-500/30 transition flex items-center gap-2">
+          <i class="fa-solid fa-calendar-days text-amber-400"></i>
+          <span>Jadual Bulanan</span>
+        </button>
+      </div>
 
-          <div class="prayer-grid grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7 gap-3" id="prayer-cards-container">
-            <div id="card-Imsak" class="glass-card rounded-xl p-4 border border-emerald-800/50 flex flex-col items-center justify-between transition-all duration-300">
-              <span class="text-xs text-emerald-300 font-semibold tracking-wider uppercase mb-1">Imsak</span>
-              <i class="fa-solid fa-cloud-moon text-emerald-400 text-2xl my-2"></i>
-              <span class="prayer-time text-xl font-bold font-mono text-amber-300" id="time-Imsak">--:--</span>
-              <span class="status-badge text-[10px] mt-2 px-2 py-0.5 rounded-full bg-emerald-950 text-emerald-400 border border-emerald-800">Imsak</span>
-            </div>
-
-            <div id="card-Subuh" class="glass-card rounded-xl p-4 border border-emerald-800/50 flex flex-col items-center justify-between transition-all duration-300">
-              <span class="text-xs text-emerald-300 font-semibold tracking-wider uppercase mb-1">Subuh</span>
-              <i class="fa-solid fa-sun text-amber-400/80 text-2xl my-2"></i>
-              <span class="prayer-time text-xl font-bold font-mono text-amber-300" id="time-Subuh">--:--</span>
-              <span class="status-badge text-[10px] mt-2 px-2 py-0.5 rounded-full bg-emerald-950 text-emerald-400 border border-emerald-800">Fardhu</span>
-            </div>
-
-            <div id="card-Syuruk" class="glass-card rounded-xl p-4 border border-emerald-800/50 flex flex-col items-center justify-between transition-all duration-300">
-              <span class="text-xs text-emerald-300 font-semibold tracking-wider uppercase mb-1">Syuruk</span>
-              <i class="fa-solid fa-sun-plant-wilt text-amber-300 text-2xl my-2"></i>
-              <span class="prayer-time text-xl font-bold font-mono text-amber-300" id="time-Syuruk">--:--</span>
-              <span class="status-badge text-[10px] mt-2 px-2 py-0.5 rounded-full bg-emerald-950 text-emerald-400 border border-emerald-800">Terbit</span>
-            </div>
-
-            <div id="card-Zohor" class="glass-card rounded-xl p-4 border border-emerald-800/50 flex flex-col items-center justify-between transition-all duration-300">
-              <span class="text-xs text-emerald-300 font-semibold tracking-wider uppercase mb-1">Zohor</span>
-              <i class="fa-solid fa-sun text-yellow-400 text-2xl my-2"></i>
-              <span class="prayer-time text-xl font-bold font-mono text-amber-300" id="time-Zohor">--:--</span>
-              <span class="status-badge text-[10px] mt-2 px-2 py-0.5 rounded-full bg-emerald-950 text-emerald-400 border border-emerald-800">Fardhu</span>
-            </div>
-
-            <div id="card-Asar" class="glass-card rounded-xl p-4 border border-emerald-800/50 flex flex-col items-center justify-between transition-all duration-300">
-              <span class="text-xs text-emerald-300 font-semibold tracking-wider uppercase mb-1">Asar</span>
-              <i class="fa-solid fa-cloud-sun text-amber-500 text-2xl my-2"></i>
-              <span class="prayer-time text-xl font-bold font-mono text-amber-300" id="time-Asar">--:--</span>
-              <span class="status-badge text-[10px] mt-2 px-2 py-0.5 rounded-full bg-emerald-950 text-emerald-400 border border-emerald-800">Fardhu</span>
-            </div>
-
-            <div id="card-Maghrib" class="glass-card rounded-xl p-4 border border-emerald-800/50 flex flex-col items-center justify-between transition-all duration-300">
-              <span class="text-xs text-emerald-300 font-semibold tracking-wider uppercase mb-1">Maghrib</span>
-              <i class="fa-solid fa-cloud-sun-rain text-orange-400 text-2xl my-2"></i>
-              <span class="prayer-time text-xl font-bold font-mono text-amber-300" id="time-Maghrib">--:--</span>
-              <span class="status-badge text-[10px] mt-2 px-2 py-0.5 rounded-full bg-emerald-950 text-emerald-400 border border-emerald-800">Fardhu</span>
-            </div>
-
-            <div id="card-Isya" class="glass-card rounded-xl p-4 border border-emerald-800/50 flex flex-col items-center justify-between transition-all duration-300">
-              <span class="text-xs text-emerald-300 font-semibold tracking-wider uppercase mb-1">Isya'</span>
-              <i class="fa-solid fa-moon text-indigo-300 text-2xl my-2"></i>
-              <span class="prayer-time text-xl font-bold font-mono text-amber-300" id="time-Isya">--:--</span>
-              <span class="status-badge text-[10px] mt-2 px-2 py-0.5 rounded-full bg-emerald-950 text-emerald-400 border border-emerald-800">Fardhu</span>
-            </div>
-          </div>
+      <!-- Kotak Waktu Solat Dibesarkan Maksimum (Utama) -->
+      <div class="prayer-grid grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-4 md:gap-5" id="prayer-cards-container">
+        
+        <div id="card-Imsak" class="glass-card rounded-2xl p-5 md:p-6 border-2 border-emerald-800/60 flex flex-col items-center justify-between min-h-[250px] md:min-h-[290px] transition-all duration-300 hover:scale-105 shadow-xl">
+          <span class="text-base md:text-lg text-emerald-300 font-black tracking-widest uppercase mb-1">IMSAK</span>
+          <i class="fa-solid fa-cloud-moon text-emerald-400 text-4xl md:text-5xl my-3"></i>
+          <span class="prayer-time text-3xl md:text-4xl lg:text-5xl font-black font-mono text-amber-300 tracking-tight" id="time-Imsak">--:--</span>
+          <span class="status-badge text-xs md:text-sm mt-3 px-4 py-1.5 rounded-full bg-emerald-950 text-emerald-400 border border-emerald-800 font-bold uppercase tracking-wider">Imsak</span>
         </div>
 
-        <div class="glass-panel rounded-xl p-5 border-emerald-800/60 mt-6 relative overflow-hidden">
-          <div class="flex items-center space-x-2 text-amber-400 text-sm font-bold mb-2">
-            <i class="fa-solid fa-book-quran"></i>
-            <span>Tazkirah Ringkas / Ayat Pilihan Hari Ini</span>
-          </div>
-          <p id="tazkirah-arabic" class="text-right text-lg md:text-xl font-arabic text-amber-200 leading-relaxed my-2">
-            بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ • إِنَّ الصَّلَاةَ كَانَتْ عَلَى الْمُؤْمِنِينَ كِتَابًا مَّوْقُوتًا
-          </p>
-          <p id="tazkirah-translation" class="text-xs md:text-sm text-emerald-100/90 italic leading-normal">
-            "Sesungguhnya solat itu adalah satu ketetapan yang diwajibkan atas orang-orang yang beriman, yang tertentu waktunya." (Surah An-Nisa': 103)
-          </p>
-        </div>
-      </main>
-
-      <aside class="lg:col-span-4 space-y-6" id="sidebar-section">
-        <div class="glass-panel rounded-2xl p-5 border-amber-500/30">
-          <div class="flex items-center justify-between mb-4 border-b border-emerald-800 pb-3">
-            <h3 class="font-bold text-amber-300 flex items-center gap-2">
-              <i class="fa-solid fa-clipboard-list text-amber-400"></i> Papan Notis Surau
-            </h3>
-            <span class="text-[10px] bg-amber-500/20 text-amber-300 border border-amber-500/40 px-2 py-0.5 rounded">Terkini</span>
-          </div>
-          
-          <div class="space-y-3 max-h-[220px] overflow-y-auto pr-1">
-            <div class="bg-emerald-950/60 p-3 rounded-xl border border-emerald-800/80">
-              <div class="flex items-center justify-between text-xs text-amber-400 font-semibold mb-1">
-                <span><i class="fa-solid fa-graduation-cap mr-1"></i> Kelas Takmir Surau</span>
-                <span class="text-[10px] text-emerald-400">Setiap Rabu</span>
-              </div>
-              <p class="text-xs text-slate-200">Pengajian Kelas Takmir selepas solat Maghrib.</p>
-            </div>
-
-            <div class="bg-emerald-950/60 p-3 rounded-xl border border-emerald-800/80">
-              <div class="flex items-center justify-between text-xs text-amber-400 font-semibold mb-1">
-                <span><i class="fa-solid fa-hands-holding-child mr-1"></i> Bacaan Yaasin & Tahlil</span>
-                <span class="text-[10px] text-emerald-400">Setiap Khamis</span>
-              </div>
-              <p class="text-xs text-slate-200">Majlis Bacaan Yaasin & Tahlil selepas solat Maghrib.</p>
-            </div>
-          </div>
+        <div id="card-Subuh" class="glass-card rounded-2xl p-5 md:p-6 border-2 border-emerald-800/60 flex flex-col items-center justify-between min-h-[250px] md:min-h-[290px] transition-all duration-300 hover:scale-105 shadow-xl">
+          <span class="text-base md:text-lg text-emerald-300 font-black tracking-widest uppercase mb-1">SUBUH</span>
+          <i class="fa-solid fa-sun text-amber-400/90 text-4xl md:text-5xl my-3"></i>
+          <span class="prayer-time text-3xl md:text-4xl lg:text-5xl font-black font-mono text-amber-300 tracking-tight" id="time-Subuh">--:--</span>
+          <span class="status-badge text-xs md:text-sm mt-3 px-4 py-1.5 rounded-full bg-emerald-950 text-emerald-400 border border-emerald-800 font-bold uppercase tracking-wider">Fardhu</span>
         </div>
 
-        <div class="glass-panel rounded-2xl p-5 border-emerald-800/60 space-y-4">
-          <h3 class="font-bold text-amber-300 flex items-center gap-2 border-b border-emerald-800 pb-2">
-            <i class="fa-solid fa-compass text-amber-400"></i> Panduan & Jadual
-          </h3>
-
-          <div class="bg-emerald-950/70 p-3.5 rounded-xl border border-emerald-800 flex items-center justify-between">
-            <div class="flex items-center space-x-3">
-              <div class="w-10 h-10 rounded-full bg-amber-500/10 border border-amber-400/40 flex items-center justify-center text-amber-400">
-                <i class="fa-solid fa-compass text-xl"></i>
-              </div>
-              <div>
-                <span class="text-xs font-semibold text-slate-200 block">Arah Kiblat (Melaka)</span>
-                <span class="text-[11px] text-emerald-300 font-mono">292° 55' WNW</span>
-              </div>
-            </div>
-            <span class="text-xs bg-emerald-900 text-amber-300 px-2 py-1 rounded font-bold border border-amber-500/30">293°</span>
-          </div>
-
-          <button onclick="openMonthlyModal()" class="w-full bg-emerald-800 hover:bg-emerald-700 text-amber-300 font-semibold text-xs py-2.5 px-4 rounded-xl border border-amber-500/30 transition flex items-center justify-center space-x-2">
-            <i class="fa-solid fa-calendar-days text-amber-400"></i>
-            <span>Papar Jadual Waktu Solat Bulanan</span>
-          </button>
+        <div id="card-Syuruk" class="glass-card rounded-2xl p-5 md:p-6 border-2 border-emerald-800/60 flex flex-col items-center justify-between min-h-[250px] md:min-h-[290px] transition-all duration-300 hover:scale-105 shadow-xl">
+          <span class="text-base md:text-lg text-emerald-300 font-black tracking-widest uppercase mb-1">SYURUK</span>
+          <i class="fa-solid fa-sun-plant-wilt text-amber-300 text-4xl md:text-5xl my-3"></i>
+          <span class="prayer-time text-3xl md:text-4xl lg:text-5xl font-black font-mono text-amber-300 tracking-tight" id="time-Syuruk">--:--</span>
+          <span class="status-badge text-xs md:text-sm mt-3 px-4 py-1.5 rounded-full bg-emerald-950 text-emerald-400 border border-emerald-800 font-bold uppercase tracking-wider">Terbit</span>
         </div>
-      </aside>
-    </div>
+
+        <div id="card-Zohor" class="glass-card rounded-2xl p-5 md:p-6 border-2 border-emerald-800/60 flex flex-col items-center justify-between min-h-[250px] md:min-h-[290px] transition-all duration-300 hover:scale-105 shadow-xl">
+          <span class="text-base md:text-lg text-emerald-300 font-black tracking-widest uppercase mb-1">ZOHOR</span>
+          <i class="fa-solid fa-sun text-yellow-400 text-4xl md:text-5xl my-3"></i>
+          <span class="prayer-time text-3xl md:text-4xl lg:text-5xl font-black font-mono text-amber-300 tracking-tight" id="time-Zohor">--:--</span>
+          <span class="status-badge text-xs md:text-sm mt-3 px-4 py-1.5 rounded-full bg-emerald-950 text-emerald-400 border border-emerald-800 font-bold uppercase tracking-wider">Fardhu</span>
+        </div>
+
+        <div id="card-Asar" class="glass-card rounded-2xl p-5 md:p-6 border-2 border-emerald-800/60 flex flex-col items-center justify-between min-h-[250px] md:min-h-[290px] transition-all duration-300 hover:scale-105 shadow-xl">
+          <span class="text-base md:text-lg text-emerald-300 font-black tracking-widest uppercase mb-1">ASAR</span>
+          <i class="fa-solid fa-cloud-sun text-amber-500 text-4xl md:text-5xl my-3"></i>
+          <span class="prayer-time text-3xl md:text-4xl lg:text-5xl font-black font-mono text-amber-300 tracking-tight" id="time-Asar">--:--</span>
+          <span class="status-badge text-xs md:text-sm mt-3 px-4 py-1.5 rounded-full bg-emerald-950 text-emerald-400 border border-emerald-800 font-bold uppercase tracking-wider">Fardhu</span>
+        </div>
+
+        <div id="card-Maghrib" class="glass-card rounded-2xl p-5 md:p-6 border-2 border-emerald-800/60 flex flex-col items-center justify-between min-h-[250px] md:min-h-[290px] transition-all duration-300 hover:scale-105 shadow-xl">
+          <span class="text-base md:text-lg text-emerald-300 font-black tracking-widest uppercase mb-1">MAGHRIB</span>
+          <i class="fa-solid fa-cloud-sun-rain text-orange-400 text-4xl md:text-5xl my-3"></i>
+          <span class="prayer-time text-3xl md:text-4xl lg:text-5xl font-black font-mono text-amber-300 tracking-tight" id="time-Maghrib">--:--</span>
+          <span class="status-badge text-xs md:text-sm mt-3 px-4 py-1.5 rounded-full bg-emerald-950 text-emerald-400 border border-emerald-800 font-bold uppercase tracking-wider">Fardhu</span>
+        </div>
+
+        <div id="card-Isya" class="glass-card rounded-2xl p-5 md:p-6 border-2 border-emerald-800/60 flex flex-col items-center justify-between min-h-[250px] md:min-h-[290px] transition-all duration-300 hover:scale-105 shadow-xl">
+          <span class="text-base md:text-lg text-emerald-300 font-black tracking-widest uppercase mb-1">ISYA'</span>
+          <i class="fa-solid fa-moon text-indigo-300 text-4xl md:text-5xl my-3"></i>
+          <span class="prayer-time text-3xl md:text-4xl lg:text-5xl font-black font-mono text-amber-300 tracking-tight" id="time-Isya">--:--</span>
+          <span class="status-badge text-xs md:text-sm mt-3 px-4 py-1.5 rounded-full bg-emerald-950 text-emerald-400 border border-emerald-800 font-bold uppercase tracking-wider">Fardhu</span>
+        </div>
+
+      </div>
+    </main>
 
     <!-- FOOTER -->
-    <footer id="footer-section" class="border-t border-emerald-800/80 pt-4 mt-auto flex flex-col sm:flex-row items-center justify-between text-xs text-emerald-300/70 gap-2">
+    <footer id="footer-section" class="border-t border-emerald-800/80 pt-4 mt-6 flex flex-col sm:flex-row items-center justify-between text-xs text-emerald-300/70 gap-2">
       <div>© <span id="current-year">2026</span> <strong>Surau Al Falah TSCC</strong>. Jadual Khas Surau.</div>
       <div>Sistem Waktu Azan TV Surau v3.0</div>
     </footer>
@@ -525,53 +431,16 @@
       { date: "31-Jan-2027", hijri: "22-Syb-1448", day: "Ahad", imsak: "6:03 am", fajr: "6:13 am", syuruk: "7:24 am", dhuhr: "1:27 pm", asr: "4:48 pm", maghrib: "7:26 pm", isha: "8:38 pm" }
     ];
 
-    let audioEnabled = true;
-    let tvModeActive = false;
     let todayData = null;
 
-    const dayNames = ["Ahad", "Isnin", "Selasa", "Rabu", "Khamis", "Jumaat", "Sabtu"];
-    const monthNames = ["Januari", "Februari", "Mac", "April", "Mei", "Jun", "Julai", "Ogos", "September", "Oktober", "November", "Disember"];
-
     window.onload = function() {
-      document.getElementById('current-year').textContent = new Date().getFullYear();
+      const yearEl = document.getElementById('current-year');
+      if (yearEl) yearEl.textContent = new Date().getFullYear();
+      
       loadTodayPrayerData();
-      updateDynamicNotice();
       updateClock();
       setInterval(updateClock, 1000);
     };
-
-    function updateDynamicNotice() {
-      const dayIndex = new Date().getDay(); // 3 = Rabu, 4 = Khamis
-      const noticeBox = document.getElementById('dynamic-today-notice');
-      const noticeTitle = document.getElementById('notice-title');
-      const noticeBadge = document.getElementById('notice-badge');
-      const noticeDesc = document.getElementById('notice-desc');
-
-      if (!noticeBox) return;
-
-      if (dayIndex === 3) {
-        // Hari Rabu
-        noticeBox.className = "bg-amber-500/20 border-amber-500/60 p-3.5 rounded-xl text-amber-200 shadow-lg";
-        noticeTitle.innerHTML = `<i class="fa-solid fa-graduation-cap mr-1 text-amber-400"></i> Aktiviti Malam Ini (Rabu)`;
-        noticeBadge.className = "text-[10px] px-2 py-0.5 rounded bg-amber-500 text-slate-950 font-bold uppercase";
-        noticeBadge.textContent = "Kelas Takmir";
-        noticeDesc.textContent = "Pengajian Kelas Takmir Surau Al Falah TSCC selepas solat Maghrib.";
-      } else if (dayIndex === 4) {
-        // Hari Khamis
-        noticeBox.className = "bg-emerald-800/40 border-amber-400/60 p-3.5 rounded-xl text-emerald-100 shadow-lg";
-        noticeTitle.innerHTML = `<i class="fa-solid fa-book-open-reader mr-1 text-amber-400"></i> Aktiviti Malam Ini (Khamis)`;
-        noticeBadge.className = "text-[10px] px-2 py-0.5 rounded bg-emerald-500 text-slate-950 font-bold uppercase";
-        noticeBadge.textContent = "Yaasin & Tahlil";
-        noticeDesc.textContent = "Program Bacaan Yaasin & Tahlil selepas solat Maghrib. Semua jemaah dijemput hadir.";
-      } else {
-        // Hari-hari lain
-        noticeBox.className = "bg-emerald-950/60 border-emerald-800 p-3.5 rounded-xl text-slate-200";
-        noticeTitle.innerHTML = `<i class="fa-solid fa-mosque mr-1 text-amber-400"></i> Info Aktiviti Surau`;
-        noticeBadge.className = "text-[10px] px-2 py-0.5 rounded bg-emerald-900 text-emerald-300 border border-emerald-700 uppercase";
-        noticeBadge.textContent = "Surau Al Falah";
-        noticeDesc.textContent = "Selamat datang ke Surau Al Falah TSCC. Sila pastikan telefon bimbit disenyapkan semasa di dalam ruang solat.";
-      }
-    }
 
     function loadTodayPrayerData() {
       const now = new Date();
@@ -580,11 +449,14 @@
       todayData = customSchedule.find(item => item.date === formattedToday);
 
       if (!todayData) {
-        todayData = customSchedule[0];
+        todayData = customSchedule[0]; // Fallback data
       }
 
-      document.getElementById('gregorian-date').textContent = `${todayData.day}, ${formatDisplayDate(now)}`;
-      document.getElementById('hijri-date').textContent = todayData.hijri;
+      const gregEl = document.getElementById('gregorian-date');
+      const hijriEl = document.getElementById('hijri-date');
+
+      if (gregEl) gregEl.textContent = `${todayData.day}, ${formatDisplayDate(now)}`;
+      if (hijriEl) hijriEl.textContent = todayData.hijri;
 
       document.getElementById('time-Imsak').textContent = convertTo24H(todayData.imsak);
       document.getElementById('time-Subuh').textContent = convertTo24H(todayData.fajr);
@@ -594,4 +466,179 @@
       document.getElementById('time-Maghrib').textContent = convertTo24H(todayData.maghrib);
       document.getElementById('time-Isya').textContent = convertTo24H(todayData.isha);
     }
-<!-- ... existing code -->
+
+    function updateClock() {
+      const now = new Date();
+
+      // Update Digital Clock
+      const hours = String(now.getHours()).padStart(2, '0');
+      const minutes = String(now.getMinutes()).padStart(2, '0');
+      const seconds = String(now.getSeconds()).padStart(2, '0');
+
+      const clockEl = document.getElementById('live-clock');
+      const secEl = document.getElementById('live-clock-seconds');
+      
+      if (clockEl && clockEl.childNodes.length > 0) {
+        clockEl.childNodes[0].nodeValue = `${hours}:${minutes}`;
+      }
+      if (secEl) secEl.textContent = `:${seconds}`;
+
+      // Update Analog Clock
+      const secDeg = (now.getSeconds() / 60) * 360;
+      const minDeg = ((now.getMinutes() + now.getSeconds() / 60) / 60) * 360;
+      const hourDeg = (((now.getHours() % 12) + now.getMinutes() / 60) / 12) * 360;
+
+      const secHand = document.getElementById('analog-second-hand');
+      const minHand = document.getElementById('analog-minute-hand');
+      const hourHand = document.getElementById('analog-hour-hand');
+
+      if (secHand) secHand.style.transform = `rotate(${secDeg}deg)`;
+      if (minHand) minHand.style.transform = `rotate(${minDeg}deg)`;
+      if (hourHand) hourHand.style.transform = `rotate(${hourDeg}deg)`;
+
+      // Update Countdown
+      updateCountdown(now);
+    }
+
+    function updateCountdown(now) {
+      if (!todayData) return;
+
+      const prayerTimes = [
+        { name: "Subuh", timeStr: todayData.fajr },
+        { name: "Syuruk", timeStr: todayData.syuruk },
+        { name: "Zohor", timeStr: todayData.dhuhr },
+        { name: "Asar", timeStr: todayData.asr },
+        { name: "Maghrib", timeStr: todayData.maghrib },
+        { name: "Isya'", timeStr: todayData.isha }
+      ];
+
+      let nextPrayer = null;
+      let nextPrayerDate = null;
+
+      for (let p of prayerTimes) {
+        const pDate = parseTimeString(p.timeStr, now);
+        if (pDate > now) {
+          nextPrayer = p;
+          nextPrayerDate = pDate;
+          break;
+        }
+      }
+
+      if (!nextPrayer) {
+        nextPrayer = prayerTimes[0];
+        nextPrayerDate = parseTimeString(prayerTimes[0].timeStr, now);
+        nextPrayerDate.setDate(nextPrayerDate.getDate() + 1);
+      }
+
+      const diffMs = nextPrayerDate - now;
+      const diffSecs = Math.max(0, Math.floor(diffMs / 1000));
+
+      const h = Math.floor(diffSecs / 3600);
+      const m = Math.floor((diffSecs % 3600) / 60);
+      const s = diffSecs % 60;
+
+      const nameEl = document.getElementById('next-prayer-name');
+      const bracketTime = document.getElementById('next-prayer-time-bracket');
+      
+      if (nameEl) nameEl.textContent = nextPrayer.name;
+      if (bracketTime) bracketTime.textContent = `(${convertTo24H(nextPrayer.timeStr)})`;
+
+      const cdH = document.getElementById('cd-hours');
+      const cdM = document.getElementById('cd-minutes');
+      const cdS = document.getElementById('cd-seconds');
+
+      if (cdH) cdH.textContent = String(h).padStart(2, '0');
+      if (cdM) cdM.textContent = String(m).padStart(2, '0');
+      if (cdS) cdS.textContent = String(s).padStart(2, '0');
+
+      // Highlight active prayer card
+      const allCards = ["Imsak", "Subuh", "Syuruk", "Zohor", "Asar", "Maghrib", "Isya"];
+      allCards.forEach(c => {
+        const el = document.getElementById(`card-${c}`);
+        if (el) el.classList.remove('active-prayer-card');
+      });
+
+      const currentCardId = nextPrayer.name === "Isya'" ? "Isya" : nextPrayer.name;
+      const activeEl = document.getElementById(`card-${currentCardId}`);
+      if (activeEl) activeEl.classList.add('active-prayer-card');
+    }
+
+    function parseTimeString(timeStr, baseDate) {
+      if (!timeStr) return new Date();
+      const match = timeStr.match(/(\d+):(\d+)\s*(am|pm)/i);
+      if (!match) return new Date();
+
+      let hours = parseInt(match[1]);
+      const minutes = parseInt(match[2]);
+      const ampm = match[3].toLowerCase();
+
+      if (ampm === 'pm' && hours < 12) hours += 12;
+      if (ampm === 'am' && hours === 12) hours = 0;
+
+      const d = new Date(baseDate);
+      d.setHours(hours, minutes, 0, 0);
+      return d;
+    }
+
+    function convertTo24H(timeStr) {
+      if (!timeStr) return "--:--";
+      const match = timeStr.match(/(\d+):(\d+)\s*(am|pm)/i);
+      if (!match) return timeStr;
+
+      let hours = parseInt(match[1]);
+      const minutes = parseInt(match[2]);
+      const ampm = match[3].toLowerCase();
+
+      if (ampm === 'pm' && hours < 12) hours += 12;
+      if (ampm === 'am' && hours === 12) hours = 0;
+
+      return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
+    }
+
+    function getFormattedDateKey(d) {
+      const day = String(d.getDate()).padStart(2, '0');
+      const monthNames = ["Jan", "Feb", "Mac", "Apr", "Mei", "Jun", "Jul", "Ogos", "Sep", "Okt", "Nov", "Dis"];
+      const month = monthNames[d.getMonth()];
+      const year = d.getFullYear();
+      return `${day}-${month}-${year}`;
+    }
+
+    function formatDisplayDate(d) {
+      const monthNamesLong = ["Januari", "Februari", "Mac", "April", "Mei", "Jun", "Julai", "Ogos", "September", "Oktober", "November", "Disember"];
+      return `${d.getDate()} ${monthNamesLong[d.getMonth()]} ${d.getFullYear()}`;
+    }
+
+    function openMonthlyModal() {
+      const tbody = document.getElementById('monthly-table-body');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+
+      customSchedule.forEach(item => {
+        const tr = document.createElement('tr');
+        tr.className = "hover:bg-emerald-900/40 border-b border-emerald-900/50";
+        tr.innerHTML = `
+          <td class="py-2 px-3 font-semibold text-amber-300">${item.date}</td>
+          <td class="py-2 px-3 text-emerald-200">${item.hijri}</td>
+          <td class="py-2 px-3">${item.day}</td>
+          <td class="py-2 px-3">${convertTo24H(item.imsak)}</td>
+          <td class="py-2 px-3">${convertTo24H(item.fajr)}</td>
+          <td class="py-2 px-3">${convertTo24H(item.syuruk)}</td>
+          <td class="py-2 px-3">${convertTo24H(item.dhuhr)}</td>
+          <td class="py-2 px-3">${convertTo24H(item.asr)}</td>
+          <td class="py-2 px-3">${convertTo24H(item.maghrib)}</td>
+          <td class="py-2 px-3">${convertTo24H(item.isha)}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      const modal = document.getElementById('monthly-modal');
+      if (modal) modal.classList.remove('hidden');
+    }
+
+    function closeMonthlyModal() {
+      const modal = document.getElementById('monthly-modal');
+      if (modal) modal.classList.add('hidden');
+    }
+  </script>
+</body>
+</html>
