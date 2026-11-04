@@ -346,9 +346,9 @@
             <div class="bg-emerald-950/60 p-3 rounded-xl border border-emerald-800/80">
               <div class="flex items-center justify-between text-xs text-amber-400 font-semibold mb-1">
                 <span><i class="fa-solid fa-hands-holding-child mr-1"></i> Bacaan Yaasin & Tahlil</span>
-                <span class="text-[10px] text-emerald-400">Malam Jumaat / Khamis</span>
+                <span class="text-[10px] text-emerald-400">Setiap Khamis</span>
               </div>
-              <p class="text-xs text-slate-200">Majlis bacaan Yaasin dan Tahlil selepas solat Maghrib.</p>
+              <p class="text-xs text-slate-200">Majlis Bacaan Yaasin & Tahlil selepas solat Maghrib.</p>
             </div>
           </div>
         </div>
@@ -555,21 +555,21 @@
         noticeTitle.innerHTML = `<i class="fa-solid fa-graduation-cap mr-1 text-amber-400"></i> Aktiviti Malam Ini (Rabu)`;
         noticeBadge.className = "text-[10px] px-2 py-0.5 rounded bg-amber-500 text-slate-950 font-bold uppercase";
         noticeBadge.textContent = "Kelas Takmir";
-        noticeDesc.textContent = "Program Pengajian Kelas Takmir Surau Al Falah TSCC akan diadakan selepas solat Maghrib secara berjemaah.";
+        noticeDesc.textContent = "Pengajian Kelas Takmir Surau Al Falah TSCC selepas solat Maghrib.";
       } else if (dayIndex === 4) {
         // Hari Khamis
         noticeBox.className = "bg-emerald-800/40 border-amber-400/60 p-3.5 rounded-xl text-emerald-100 shadow-lg";
         noticeTitle.innerHTML = `<i class="fa-solid fa-book-open-reader mr-1 text-amber-400"></i> Aktiviti Malam Ini (Khamis)`;
         noticeBadge.className = "text-[10px] px-2 py-0.5 rounded bg-emerald-500 text-slate-950 font-bold uppercase";
         noticeBadge.textContent = "Yaasin & Tahlil";
-        noticeDesc.textContent = "Program Bacaan Yaasin dan Tahlil malam Jumaat akan diadakan selepas solat Maghrib. Semua jemaah dijemput hadir.";
+        noticeDesc.textContent = "Program Bacaan Yaasin & Tahlil selepas solat Maghrib. Semua jemaah dijemput hadir.";
       } else {
         // Hari-hari lain
         noticeBox.className = "bg-emerald-950/60 border-emerald-800 p-3.5 rounded-xl text-slate-200";
         noticeTitle.innerHTML = `<i class="fa-solid fa-mosque mr-1 text-amber-400"></i> Info Aktiviti Surau`;
         noticeBadge.className = "text-[10px] px-2 py-0.5 rounded bg-emerald-900 text-emerald-300 border border-emerald-700 uppercase";
         noticeBadge.textContent = "Surau Al Falah";
-        noticeDesc.textContent = "Selamat datang ke Surau Al Falah TSCC. Sila pastikan telefon bimbit disenyapkan semasa di dalam Dewan Solat.";
+        noticeDesc.textContent = "Selamat datang ke Surau Al Falah TSCC. Sila pastikan telefon bimbit disenyapkan semasa di dalam ruang solat.";
       }
     }
 
@@ -593,160 +593,5 @@
       document.getElementById('time-Asar').textContent = convertTo24H(todayData.asr);
       document.getElementById('time-Maghrib').textContent = convertTo24H(todayData.maghrib);
       document.getElementById('time-Isya').textContent = convertTo24H(todayData.isha);
-
-      // Dynamic Daily Notice Update
-      const dayToday = todayData.day;
-      const noticeDayEl = document.getElementById('notice-today-day');
-      const noticeTextEl = document.getElementById('notice-today-text');
-
-      noticeDayEl.textContent = dayToday;
-      if (dayToday === "Rabu") {
-        noticeTextEl.textContent = "Malam ini: Kelas Takmir Surau Al Falah selepas solat Maghrib. Semua jemaah dijemput hadir.";
-      } else if (dayToday === "Khamis") {
-        noticeTextEl.textContent = "Malam ini (Malam Jumaat): Program Bacaan Yaasin, Tahlil & Doa Selamat selepas solat Maghrib.";
-      } else if (dayToday === "Jumaat") {
-        noticeTextEl.textContent = "Hari ini: Solat Jumaat & Kuliah Subuh/Maghrib Perdana.";
-      } else {
-        noticeTextEl.textContent = "Aktiviti harian surau berjalan seperti biasa. Sila kekalkan kebersihan dewan solat.";
-      }
     }
-
-    function getFormattedDateKey(d) {
-      const day = String(d.getDate()).padStart(2, '0');
-      const months = ["Jan", "Feb", "Mac", "Apr", "Mei", "Jun", "Jul", "Ogos", "Sep", "Okt", "Nov", "Dis"];
-      const month = months[d.getMonth()];
-      const year = d.getFullYear();
-      return `${day}-${month}-${year}`;
-    }
-
-    function formatDisplayDate(d) {
-      return `${d.getDate()} ${monthNames[d.getMonth()]} ${d.getFullYear()}`;
-    }
-
-    function convertTo24H(timeStr) {
-      if (!timeStr) return "00:00";
-      const [time, modifier] = timeStr.split(' ');
-      let [hours, minutes] = time.split(':');
-      if (hours === '12') hours = '00';
-      if (modifier === 'pm') hours = parseInt(hours, 10) + 12;
-      return `${String(hours).padStart(2, '0')}:${minutes}`;
-    }
-
-    function updateClock() {
-      const now = new Date();
-      const h = String(now.getHours()).padStart(2, '0');
-      const m = String(now.getMinutes()).padStart(2, '0');
-      const s = String(now.getSeconds()).padStart(2, '0');
-
-      document.getElementById('live-clock').childNodes[0].nodeValue = `${h}:${m}`;
-      document.getElementById('live-clock-seconds').textContent = `:${s}`;
-
-      // Update Analog Clock Hands
-      const seconds = now.getSeconds();
-      const minutes = now.getMinutes();
-      const hours = now.getHours() % 12;
-
-      const secDeg = (seconds / 60) * 360;
-      const minDeg = ((minutes + seconds / 60) / 60) * 360;
-      const hourDeg = ((hours + minutes / 60) / 12) * 360;
-
-      const secHand = document.getElementById('analog-second-hand');
-      const minHand = document.getElementById('analog-minute-hand');
-      const hrHand = document.getElementById('analog-hour-hand');
-
-      if (secHand) secHand.style.transform = `rotate(${secDeg}deg)`;
-      if (minHand) minHand.style.transform = `rotate(${minDeg}deg)`;
-      if (hrHand) hrHand.style.transform = `rotate(${hourDeg}deg)`;
-
-      updateCountdown(now);
-    }
-
-    function updateCountdown(now) {
-      if (!todayData) return;
-
-      const prayers = [
-        { name: 'Imsak', time: convertTo24H(todayData.imsak) },
-        { name: 'Subuh', time: convertTo24H(todayData.fajr) },
-        { name: 'Syuruk', time: convertTo24H(todayData.syuruk) },
-        { name: 'Zohor', time: convertTo24H(todayData.dhuhr) },
-        { name: 'Asar', time: convertTo24H(todayData.asr) },
-        { name: 'Maghrib', time: convertTo24H(todayData.maghrib) },
-        { name: 'Isya\'', time: convertTo24H(todayData.isha) }
-      ];
-
-      const nowSec = now.getHours() * 3600 + now.getMinutes() * 60 + now.getSeconds();
-      let nextIndex = -1;
-
-      for (let i = 0; i < prayers.length; i++) {
-        const [ph, pm] = prayers[i].time.split(':').map(Number);
-        const pSec = ph * 3600 + pm * 60;
-        if (nowSec < pSec) {
-          nextIndex = i;
-          break;
-        }
-      }
-
-      if (nextIndex === -1) nextIndex = 0;
-
-      const nextP = prayers[nextIndex];
-      const [nh, nm] = nextP.time.split(':').map(Number);
-      let targetSec = nh * 3600 + nm * 60;
-
-      if (targetSec <= nowSec) targetSec += 24 * 3600;
-
-      const diff = targetSec - nowSec;
-      const hrs = Math.floor(diff / 3600);
-      const mins = Math.floor((diff % 3600) / 60);
-      const secs = diff % 60;
-
-      document.getElementById('cd-hours').textContent = String(hrs).padStart(2, '0');
-      document.getElementById('cd-minutes').textContent = String(mins).padStart(2, '0');
-      document.getElementById('cd-seconds').textContent = String(secs).padStart(2, '0');
-
-      document.getElementById('next-prayer-name').textContent = `Waktu ${nextP.name}`;
-      document.getElementById('next-prayer-time').textContent = nextP.time;
-    }
-
-    function toggleAudio() {
-      audioEnabled = !audioEnabled;
-      document.getElementById('audio-icon').className = audioEnabled ? "fa-solid fa-volume-high text-amber-400" : "fa-solid fa-volume-xmark text-slate-400";
-      document.getElementById('audio-status-text').textContent = audioEnabled ? "Bunyi: ON" : "Bunyi: OFF";
-    }
-
-    function toggleTVMode() {
-      tvModeActive = !tvModeActive;
-      document.body.classList.toggle('tv-mode', tvModeActive);
-    }
-
-    function openMonthlyModal() {
-      const modal = document.getElementById('monthly-modal');
-      const tbody = document.getElementById('monthly-table-body');
-      tbody.innerHTML = '';
-
-      customSchedule.forEach(row => {
-        const tr = document.createElement('tr');
-        tr.className = "hover:bg-emerald-900/40 transition";
-        tr.innerHTML = `
-          <td class="py-2 px-3 text-slate-100">${row.date}</td>
-          <td class="py-2 px-3 text-amber-300 font-arabic">${row.hijri}</td>
-          <td class="py-2 px-3 text-amber-400">${row.day}</td>
-          <td class="py-2 px-3">${convertTo24H(row.imsak)}</td>
-          <td class="py-2 px-3">${convertTo24H(row.fajr)}</td>
-          <td class="py-2 px-3">${convertTo24H(row.syuruk)}</td>
-          <td class="py-2 px-3">${convertTo24H(row.dhuhr)}</td>
-          <td class="py-2 px-3">${convertTo24H(row.asr)}</td>
-          <td class="py-2 px-3 text-amber-300 font-bold">${convertTo24H(row.maghrib)}</td>
-          <td class="py-2 px-3">${convertTo24H(row.isha)}</td>
-        `;
-        tbody.appendChild(tr);
-      });
-
-      modal.classList.remove('hidden');
-    }
-
-    function closeMonthlyModal() {
-      document.getElementById('monthly-modal').classList.add('hidden');
-    }
-  </script>
-</body>
-</html>
+<!-- ... existing code -->
